@@ -10,5 +10,6 @@ urlpatterns = [
     path('reviews/post', views.post_review),
     path('reviews/getall/<int:listers_id>', views.get_all_listers_reviews),
     path('reviews/getall/', views.get_all_reviews),
-
+    path('members/post/', views.post_member),
+    path('members/get/<int:listers_id>', views.get_members)
 ]

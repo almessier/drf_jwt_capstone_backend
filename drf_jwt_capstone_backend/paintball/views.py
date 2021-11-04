@@ -92,3 +92,26 @@ def get_all_reviews(request):
     reviews = Review.objects.all()
     serializer = ReviewSerializer(reviews, many=True)
     return Response(serializer.data)
+
+
+# Member queries
+# Post member AKA join listing
+# Gets members
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_members(request, user_id, listers_id):
+    members = Member.get.all(listing_id=listers_id)
+    member_users = members.get.all()
+    serializer = MemberSerializer(members, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_member(request):
+    if request.method == 'POST':
+        serializer = MemberSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
