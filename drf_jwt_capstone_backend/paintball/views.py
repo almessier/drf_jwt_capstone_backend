@@ -44,13 +44,13 @@ def post_listing(request):
 # Put by user id
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def put_listing(request):
-    if request.method == 'PUT':
-        serializer = ListingSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def put_listing(request, user_id):
+    listing = Listing.objects.get(user_id=user_id)
+    serializer = ListingSerializer(listing, data=request.data)
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Delete by user id

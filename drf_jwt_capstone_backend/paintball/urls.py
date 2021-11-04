@@ -4,7 +4,7 @@ from paintball import views
 urlpatterns = [
     path('listings/getall', views.get_all_listings),
     path('listings/post', views.post_listing),
-    path('listings/put', views.put_listing),
+    path('listings/put/<user_id>/', views.put_listing),
     path('listings/get', views.get_users_listings),
     path('listings/delete', views.delete_listing),
     path('reviews/post', views.post_review),

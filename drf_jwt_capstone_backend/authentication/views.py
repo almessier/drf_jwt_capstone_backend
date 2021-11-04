@@ -37,10 +37,10 @@ def get_user_by_id(request, user_id):
 # Update user
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def put_user(request):
-    if request.method == 'PUT':
-        serializer = RegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def put_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    serializer = RegistrationSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
