@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Listing, Review, Member
+from .models import Listing, Review
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -12,9 +12,3 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'content', 'rating', 'user_id']
-
-
-class MemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member
-        fields = ['id', 'listing_id', 'user_id']
