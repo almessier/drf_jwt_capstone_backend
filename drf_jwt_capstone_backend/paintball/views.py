@@ -25,8 +25,8 @@ def get_all_listings(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_current_users_listings(request):
-    listings = Listing.objects.filter(user=request.user)
-    serializer = ListingSerializer(listings, many=True)
+    listings = Listing.objects.get(user_id=request.user.id)
+    serializer = ListingSerializer(listings)
     return Response(serializer.data)
 
 
@@ -35,8 +35,8 @@ def get_current_users_listings(request):
 @permission_classes([IsAuthenticated])
 def get_users_listings_by_id(request, user_id):
     user = User.objects.get(pk=user_id)
-    listings = Listing.objects.filter(user=user)
-    serializer = ListingSerializer(listings, many=True)
+    listings = Listing.objects.get(user_id=user.id)
+    serializer = ListingSerializer(listings)
     return Response(serializer.data)
 
 
@@ -109,18 +109,19 @@ def get_all_reviews(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_members(request, listers_id):
-    members = User.objects.filter(listing=listers_id)
-    serializer = RegistrationSerializer(members, many=True)
+    members = Member.objects.select_related(
+        'user').filter(listing=listers_id)
+    serializer = MemberSerializer(members, many=True)
     return Response(serializer.data)
 
 
-# Post member AKA join listing
+# Post member to listing
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_member(request):
     if request.method == 'POST':
         serializer = MemberSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
