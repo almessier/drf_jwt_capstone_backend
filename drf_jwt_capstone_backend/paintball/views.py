@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
-from .models import Listing, Review
-from .serializers import ListingSerializer, ReviewSerializer
+from .models import Listing, Review, Member
+from .serializers import ListingSerializer, ReviewSerializer, MemberSerializer
 from django.contrib.auth import get_user_model
 from authentication.serializers import RegistrationSerializer
 
@@ -115,12 +115,12 @@ def get_members(request, listers_id):
 
 
 # Post member AKA join listing
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def post_member(request):
-#     if request.method == 'POST':
-#         serializer = RegistrationSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save(user=request.user)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_member(request):
+    if request.method == 'POST':
+        serializer = MemberSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
