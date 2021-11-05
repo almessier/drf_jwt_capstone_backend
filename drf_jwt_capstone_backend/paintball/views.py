@@ -3,9 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
-from .models import Listing, Review, Member
-from .serializers import ListingSerializer, ReviewSerializer, MemberSerializer
+from .models import Listing, Review
+from .serializers import ListingSerializer, ReviewSerializer
 from django.contrib.auth import get_user_model
+from authentication.serializers import RegistrationSerializer
 
 User = get_user_model()
 
@@ -20,12 +21,22 @@ def get_all_listings(request):
     return Response(serializer.data)
 
 
+# Get by current user
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_users_listings(request):
+    listings = Listing.objects.filter(user=request.user)
+    serializer = ListingSerializer(listings, many=True)
+    return Response(serializer.data)
+
+
 # Get by user id
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_users_listings(request):
-    listings = Listing.objects.filter(user_id=request.user.id)
-    serializer = ListingSerializer(listings)
+def get_users_listings_by_id(request, user_id):
+    user = User.objects.get(pk=user_id)
+    listings = Listing.objects.filter(user=user)
+    serializer = ListingSerializer(listings, many=True)
     return Response(serializer.data)
 
 
@@ -56,11 +67,10 @@ def put_listing(request, user_id):
 # Delete by user id
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def delete_listing(request):
-    if request.method == 'DELETE':
-        listing = Listing.objects.filter(user_id=request.user.id)
-        listing.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+def delete_listing(request, user_id):
+    listing = Listing.objects.get(user_id=user_id)
+    listing.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # Review queries
@@ -95,23 +105,22 @@ def get_all_reviews(request):
 
 
 # Member queries
-# Post member AKA join listing
 # Gets members
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_members(request, user_id, listers_id):
-    members = Member.get.all(listing_id=listers_id)
-    member_users = members.get.all()
-    serializer = MemberSerializer(members, many=True)
+def get_members(request, listers_id):
+    members = User.objects.filter(listing=listers_id)
+    serializer = RegistrationSerializer(members, many=True)
     return Response(serializer.data)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def post_member(request):
-    if request.method == 'POST':
-        serializer = MemberSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Post member AKA join listing
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def post_member(request):
+#     if request.method == 'POST':
+#         serializer = RegistrationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(user=request.user)
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
