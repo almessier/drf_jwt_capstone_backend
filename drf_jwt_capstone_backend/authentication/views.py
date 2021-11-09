@@ -25,18 +25,27 @@ def get_all_users(request):
     return Response(serializer.data)
 
 
+# Get all listed users
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_all_users_listed(request):
+    users = User.objects.filter(is_listed=True)
+    serializer = RegistrationSerializer(users, many=True)
+    return Response(serializer.data)
+
+
 # Get user by id
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_user_by_id(request, user_id):
-    user = User.objects.filter(pk=user_id)
-    serializer = RegistrationSerializer(user, many=True)
+    user = User.objects.get(pk=user_id)
+    serializer = RegistrationSerializer(user)
     return Response(serializer.data)
 
 
 # Update user
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def put_user(request, user_id):
     user = User.objects.get(pk=user_id)
     serializer = RegistrationSerializer(user, data=request.data, partial=True)
