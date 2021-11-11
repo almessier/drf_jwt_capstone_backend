@@ -11,6 +11,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    id = models.BigAutoField(primary_key=True)
     address = models.CharField(max_length=250, default='123 E Pine Dr')
     phone_number = models.CharField(max_length=10, default=0)
     is_listed = models.BooleanField(default=False)

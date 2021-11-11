@@ -53,3 +53,11 @@ def put_user(request, user_id):
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_id_by_username(request, username):
+    user = User.objects.get(username=username)
+    serializer = RegistrationSerializer(user)
+    return Response(serializer.data)

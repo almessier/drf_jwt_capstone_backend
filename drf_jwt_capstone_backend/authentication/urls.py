@@ -10,5 +10,6 @@ urlpatterns = [
     path('getall/', views.get_all_users),
     path('getalllisted/', views.get_all_users_listed),
     path('get/<int:user_id>/', views.get_user_by_id),
+    path('getid/<str:username>/', views.get_user_id_by_username),
     path('put/<int:user_id>/', views.put_user),
 ]
