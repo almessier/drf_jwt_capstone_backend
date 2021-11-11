@@ -1,5 +1,7 @@
 from django.urls import path
 from paintball import views
+# from django.conf.urls import url
+
 
 urlpatterns = [
     path('listings/getall/', views.get_all_listings),
@@ -12,5 +14,7 @@ urlpatterns = [
     path('reviews/getall/<int:listers_id>/', views.get_all_listers_reviews),
     path('reviews/getall/', views.get_all_reviews),
     path('members/post/', views.post_member),
-    path('members/get/<int:listers_id>/', views.get_members)
+    path('members/get/<int:listers_id>/', views.get_members),
+    # url(r'^test-payment/$', views.test_payment),
+    # url(r'^save-stripe-info/$', views.save_stripe_info),
 ]
