@@ -15,5 +15,8 @@ urlpatterns = [
     path('reviews/getall/', views.get_all_reviews),
     path('members/post/', views.post_member),
     path('members/get/<int:listers_id>/', views.get_members),
-    path('create-checkout-session/', views.post_checkout),
+    path('checkout/post/<str:price_id>/', views.post_checkout),
+    path('stripe/post/product/<str:name>/', views.post_product),
+    path('stripe/post/price/<int:price>/product/<str:product_id>/', views.post_price),
+    path('stripe/get/product/<str:name>/', views.get_product),
 ]

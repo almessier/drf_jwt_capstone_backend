@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
+from stripe.api_resources import product
 from .models import Listing, Review, Member
 from .serializers import ListingSerializer, ReviewSerializer, MemberSerializer
 from django.contrib.auth import get_user_model
@@ -135,12 +136,12 @@ def post_member(request):
 # Post Stripe checkout
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def post_checkout(request):
+def post_checkout(request, price_id):
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
-                    'price': 'price_1Juv2yDG5C4sOYL1t3pM5ylx',
+                    'price': price_id,
                     'quantity': 1,
                 },
             ],
@@ -152,3 +153,32 @@ def post_checkout(request):
         return redirect(checkout_session.url)
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Post product
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def post_product(request, name):
+    if request.method == 'POST':
+        product = stripe.Product.create(name=name)
+    return Response(product, status=status.HTTP_201_CREATED)
+
+
+# Get product id by name
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_product(request, id):
+    product = stripe.Product.retrieve(id=id)
+    return Response(product)
+
+
+# Post price
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def post_price(request, price, product_id):
+    priceObject = stripe.Price.create(
+        unit_amount=price,
+        currency='usd',
+        product=product_id
+    )
+    return Response(priceObject, status=status.HTTP_201_CREATED)
