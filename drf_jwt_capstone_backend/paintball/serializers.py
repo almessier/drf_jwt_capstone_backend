@@ -5,7 +5,8 @@ from .models import Listing, Review, Member
 class ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['id', 'start_time', 'end_time', 'start_date', 'user']
+        fields = ['id', 'start_time', 'end_time', 'start_date',
+                  'user', 'name', 'price', 'product_id', 'price_id']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
