@@ -15,6 +15,5 @@ urlpatterns = [
     path('reviews/getall/', views.get_all_reviews),
     path('members/post/', views.post_member),
     path('members/get/<int:listers_id>/', views.get_members),
-    # url(r'^test-payment/$', views.test_payment),
-    # url(r'^save-stripe-info/$', views.save_stripe_info),
+    path('create-checkout-session/', views.post_checkout),
 ]

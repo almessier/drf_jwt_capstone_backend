@@ -7,8 +7,10 @@ from .models import Listing, Review, Member
 from .serializers import ListingSerializer, ReviewSerializer, MemberSerializer
 from django.contrib.auth import get_user_model
 from authentication.serializers import RegistrationSerializer
+from django.shortcuts import redirect
 from django.conf import settings
 import stripe
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 User = get_user_model()
@@ -130,24 +132,23 @@ def post_member(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def test_payment(request):
-#     test_payment_intent = stripe.PaymentIntent.create(
-#         amount=1000, currency='usd',
-#         payment_method_types=['card'],
-#         receipt_email='test@example.com'
-#     )
-#     return Response(status=status.HTTP_200_OK, data=test_payment_intent)
-
-
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def save_stripe_info(request):
-#     data = request.data
-#     email = data['email']
-#     payment_method_id = data['payment_method_id']
-#     customer = stripe.Customer.create(
-#         email=email, payment_method=payment_method_id
-#     )
-#     return Response(status=status.HTTP_200_OK, data={'message': 'Success', 'data': {'customer_id': customer.id}})
+# Post Stripe checkout
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def post_checkout(request):
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price': 'price_1Juv2yDG5C4sOYL1t3pM5ylx',
+                    'quantity': 1,
+                },
+            ],
+            payment_method_types=['card'],
+            mode='payment',
+            success_url='http://localhost:3000/?success=true&session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='http://localhost:3000/?canceled=true',
+        )
+        return redirect(checkout_session.url)
+    except:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
