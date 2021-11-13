@@ -40,9 +40,8 @@ def get_current_users_listings(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_users_listings_by_id(request, user_id):
-    user = User.objects.get(pk=user_id)
-    listings = Listing.objects.get(user_id=user.id)
-    serializer = ListingSerializer(listings)
+    listing = Listing.objects.get(user_id=user_id)
+    serializer = ListingSerializer(listing)
     return Response(serializer.data)
 
 
