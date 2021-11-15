@@ -20,7 +20,7 @@ User = get_user_model()
 # Listing queries
 # Get all
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_all_listings(request):
     listings = Listing.objects.all()
     serializer = ListingSerializer(listings, many=True)
@@ -29,7 +29,7 @@ def get_all_listings(request):
 
 # Get by current user
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_current_users_listings(request):
     listings = Listing.objects.get(user_id=request.user.id)
     serializer = ListingSerializer(listings)
@@ -38,7 +38,7 @@ def get_current_users_listings(request):
 
 # Get by user id
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_users_listings_by_id(request, user_id):
     listing = Listing.objects.get(user_id=user_id)
     serializer = ListingSerializer(listing)
@@ -47,7 +47,7 @@ def get_users_listings_by_id(request, user_id):
 
 # Post
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def post_listing(request):
     if request.method == 'POST':
         serializer = ListingSerializer(data=request.data)
@@ -59,7 +59,7 @@ def post_listing(request):
 
 # Put by user id
 @api_view(['PUT'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def put_listing(request, user_id):
     listing = Listing.objects.get(user_id=user_id)
     serializer = ListingSerializer(listing, data=request.data)
@@ -71,7 +71,7 @@ def put_listing(request, user_id):
 
 # Delete by user id
 @api_view(['DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def delete_listing(request, user_id):
     listing = Listing.objects.get(user_id=user_id)
     listing.delete()
@@ -81,7 +81,7 @@ def delete_listing(request, user_id):
 # Review queries
 # Post review on lister's id
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def post_review(request):
     if request.method == 'POST':
         serializer = ReviewSerializer(data=request.data)
@@ -93,7 +93,7 @@ def post_review(request):
 
 # Get all reviews by lister's id
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_all_listers_reviews(request, listers_id):
     reviews = Review.objects.filter(user_id=listers_id)
     serializer = ReviewSerializer(reviews, many=True)
@@ -102,7 +102,7 @@ def get_all_listers_reviews(request, listers_id):
 
 # Get all reviews
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_all_reviews(request):
     reviews = Review.objects.all()
     serializer = ReviewSerializer(reviews, many=True)
@@ -112,7 +112,7 @@ def get_all_reviews(request):
 # Member queries
 # Gets members
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_members(request, listers_id):
     members = Member.objects.select_related(
         'user').filter(listing=listers_id)
@@ -122,7 +122,7 @@ def get_members(request, listers_id):
 
 # Post member to listing
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def post_member(request):
     if request.method == 'POST':
         serializer = MemberSerializer(data=request.data)

@@ -18,7 +18,7 @@ class RegisterView(generics.CreateAPIView):
 
 # Get all users
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_all_users(request):
     users = User.objects.all()
     serializer = RegistrationSerializer(users, many=True)
@@ -27,7 +27,7 @@ def get_all_users(request):
 
 # Get all listed users
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_all_users_listed(request):
     users = User.objects.filter(is_listed=True)
     serializer = RegistrationSerializer(users, many=True)
@@ -36,7 +36,7 @@ def get_all_users_listed(request):
 
 # Get user by id
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_user_by_id(request, user_id):
     user = User.objects.get(pk=user_id)
     serializer = RegistrationSerializer(user)
@@ -45,7 +45,7 @@ def get_user_by_id(request, user_id):
 
 # Update user
 @api_view(['PUT'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def put_user(request, user_id):
     user = User.objects.get(pk=user_id)
     serializer = RegistrationSerializer(user, data=request.data, partial=True)
@@ -56,7 +56,7 @@ def put_user(request, user_id):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_user_id_by_username(request, username):
     user = User.objects.get(username=username)
     serializer = RegistrationSerializer(user)
